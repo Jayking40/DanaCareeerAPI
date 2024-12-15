@@ -2,14 +2,15 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { AuthController } from './auth/auth.controller';
-import { AuthService } from './auth/auth.service';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { JobsModule } from './jobs/jobs.module';
+import { JobApplicationsModule } from './job-applications/job-applications.module';
 
 @Module({
-  imports: [PrismaModule, ConfigModule.forRoot({ isGlobal: true }), AuthModule,],
-  controllers: [AppController, AuthController],
-  providers: [AppService, AuthService],
+  imports: [PrismaModule, ConfigModule.forRoot({ isGlobal: true }), AuthModule, EventEmitterModule.forRoot(), JobsModule, JobApplicationsModule,],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

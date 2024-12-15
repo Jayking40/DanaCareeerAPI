@@ -5,7 +5,7 @@ import { LoginDTO, RegisterDTO } from './dto/auth.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import EventEmitter2 from 'eventemitter2';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AuthService {
