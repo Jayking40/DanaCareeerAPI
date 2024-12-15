@@ -6,8 +6,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('NestJS API')
-    .setDescription('API documentation for the NestJS project')
+    .setTitle('Dana Career API')
+    .setDescription('API documentation for the Dana Career Test project')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
