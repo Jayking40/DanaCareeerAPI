@@ -14,7 +14,7 @@ export class JobApplicationsController {
   @ApiOperation({ summary: 'Create a new job application' })
   @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: 201, description: 'Job application created successfully' })
-  @Post()
+  @Post("apply")
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -44,7 +44,7 @@ export class JobApplicationsController {
   }
   @ApiOperation({ summary: 'Get all job applications' })
   @ApiResponse({ status: 200, description: 'List of all job applications' })
-  @Get()
+  @Get("getAllApplication")
   findAll() {
     return this.applicationsService.findAll();
   }
@@ -52,7 +52,7 @@ export class JobApplicationsController {
   @ApiOperation({ summary: 'Get a specific job application by ID' })
   @ApiResponse({ status: 200, description: 'Job application data' })
   @ApiResponse({ status: 404, description: 'Job application not found' })
-  @Get(':id')
+  @Get('getApplication/:id')
   findOne(@Param('id') id: string) {
     return this.applicationsService.findOne(id);
   }
