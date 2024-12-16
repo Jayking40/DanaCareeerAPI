@@ -52,9 +52,8 @@ export class CreateJobApplicationDto {
 
   @ApiProperty({ description: 'Notice period in days', example: 30 })
   @IsNotEmpty()
-  @Type(() => Number) // Ensures the value is transformed to a number
-  @IsNumber()
-  noticePeriodDays: number;
+  @IsString()
+  noticePeriodDays: string;
 
   @ApiProperty({ description: 'Years of professional experience in the relevant industry', example: 5 })
   @IsNotEmpty()

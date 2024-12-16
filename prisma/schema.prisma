@@ -48,7 +48,7 @@ model JobApplication {
   previousIndustryExperience  String
   howDidYouKnow               String
   preferredLocation           String
-  noticePeriodDays            Int         
+  noticePeriodDays            String         
   yearsOfExperience           Int
   salaryExpectation           Float
   resumeCv                    String?
