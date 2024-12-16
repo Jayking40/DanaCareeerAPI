@@ -46,11 +46,11 @@ model JobApplication {
   address                     String
   educationalQualification    String
   previousIndustryExperience  String
-  howDidYouKnow               String
+  howDidYouKnow               String?
   preferredLocation           String
   noticePeriodDays            String         
-  yearsOfExperience           Int
-  salaryExpectation           Float
+  yearsOfExperience           String
+  salaryExpectation           String
   resumeCv                    String?
   coverLetter                 String?
   job                         Job         @relation(fields: [jobId], references: [id])

@@ -17,32 +17,47 @@ export class JobApplicationsController {
   async create(
     @Body() createJobApplicationDto: CreateJobApplicationDto,
   ) {
-    const { resumeBase64, coverBase64, ...data } = createJobApplicationDto;
-
-    if (!resumeBase64 || !coverBase64) {
-      throw new BadRequestException('Resume and cover letter are required.');
-    }
-
+    const { resumeCv, coverLetter, ...data } = createJobApplicationDto;
+  
     try {
-      const resumeUrl = await this.uploadBase64ToCloudinary(resumeBase64, 'resume');
-      const coverUrl = await this.uploadBase64ToCloudinary(coverBase64, 'cover-letter');
-
+      let resumeUrl = null;
+      let coverUrl = null;
+  
+      if (resumeCv) {
+        console.log('Uploading resume to Cloudinary...');
+        resumeUrl = await this.uploadBase64ToCloudinary(resumeCv, 'resume');
+      }
+  
+      if (coverLetter) {
+        console.log('Uploading cover letter to Cloudinary...');
+        coverUrl = await this.uploadBase64ToCloudinary(coverLetter, 'cover-letter');
+      }
+  
+      console.log('Creating job application...');
       return await this.applicationsService.create(data, resumeUrl, coverUrl);
     } catch (error) {
-      console.error('Error uploading files to Cloudinary:', error);
-      throw new BadRequestException('Failed to upload files to cloud storage.');
+      console.error('Error in create application handler:', error.message);
+      throw new BadRequestException(
+        error.message || 'An unexpected error occurred during job application creation.',
+      );
     }
   }
-
+  
   private async uploadBase64ToCloudinary(base64: string, folder: string): Promise<string> {
     try {
-      const uploadResponse = await cloudinary.uploader.upload(`data:application/pdf;base64,${base64}`, {
+      if (!base64.startsWith('data:')) {
+        base64 = `data:application/pdf;base64,${base64}`;
+      }
+  
+      const uploadResponse = await cloudinary.uploader.upload(base64, {
         folder: `job-applications/${folder}`,
       });
+  
+      console.log('Cloudinary upload successful:', uploadResponse.secure_url);
       return uploadResponse.secure_url; 
     } catch (error) {
-      console.error('Cloudinary upload error:', error);
-      throw new BadRequestException('Cloudinary upload failed.');
+      console.error('Cloudinary upload error:', error.message, error);
+      throw new BadRequestException('Failed to upload file to Cloudinary.');
     }
   }
   

@@ -11,7 +11,7 @@ export class JobApplicationsService {
     resumeUrl: string,
     coverUrl: string,
   ) {
-    const { jobId, ...data } = createJobApplicationDto;
+    const { jobId, howDidYouKnow, ...data } = createJobApplicationDto;
 
     const job = await this.prisma.job.findUnique({ where: { id: jobId } });
     if (!job) throw new NotFoundException(`Job with ID ${jobId} not found`);
@@ -23,6 +23,7 @@ export class JobApplicationsService {
         coverLetter: coverUrl,
         job: { connect: { id: jobId } },
         previousIndustryExperience: data.previousIndustryExperience || 'Not specified',
+        howDidYouKnow: howDidYouKnow || null,
       },
     });
   }

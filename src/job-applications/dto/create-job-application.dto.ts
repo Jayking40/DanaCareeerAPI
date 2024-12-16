@@ -57,26 +57,23 @@ export class CreateJobApplicationDto {
 
   @ApiProperty({ description: 'Years of professional experience in the relevant industry', example: 5 })
   @IsNotEmpty()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(1)
-  yearsOfExperience: number;
+  @IsString()
+  yearsOfExperience: string;
 
   @ApiProperty({ description: 'Salary expectation', example: 70000 })
   @IsNotEmpty()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(10000)
-  @Max(1000000)
-  salaryExpectation: number;
+  @IsString()
+  salaryExpectation: string;
 
   @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  resumeBase64: string;
+  resumeCv?: string;
 
   @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  coverBase64: string;
+  coverLetter?: string;
 
   @ApiProperty({ description: 'ID of the associated job', example: '675f1b4ee5c31b78dd29d4ed' })
   @IsNotEmpty()
