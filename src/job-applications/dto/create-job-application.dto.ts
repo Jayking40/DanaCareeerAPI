@@ -67,14 +67,14 @@ export class CreateJobApplicationDto {
     format: 'binary',
     description: 'Resume file (PDF, DOC, or DOCX)',
   })
-  resumeCv: any;
+  resumeCv?: any;
 
   @ApiProperty({
     type: 'string',
     format: 'binary',
     description: 'Cover letter file (PDF, DOC, or DOCX)',
   })
-  coverLetter: any;
+  coverLetter?: any;
 
   @ApiProperty({ description: 'ID of the associated job', example: '675f1b4ee5c31b78dd29d4ed' })
   @IsNotEmpty()

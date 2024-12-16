@@ -28,7 +28,7 @@ model Job {
   title            String
   company          String
   location         String
-  applicationDeadline String
+  applicationDeadline String?
   jobSummary       String
   responsibilities String[]         
   requiredSkills   String[]         

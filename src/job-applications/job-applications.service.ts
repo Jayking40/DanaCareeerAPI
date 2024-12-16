@@ -8,8 +8,8 @@ export class JobApplicationsService {
 
   async create(
     createJobApplicationDto: CreateJobApplicationDto,
-    resumeUrl: string,
-    coverUrl: string,
+    resumeUrl?: string,
+    coverUrl?: string,
   ) {
     const { jobId, ...data } = createJobApplicationDto;
 
