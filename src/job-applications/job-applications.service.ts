@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateJobApplicationDto } from './dto/create-job-application.dto';
 
@@ -11,21 +11,37 @@ export class JobApplicationsService {
     resumeUrl?: string,
     coverUrl?: string,
   ) {
-    const { jobId, ...data } = createJobApplicationDto;
-
-    // Check if the job exists
-    const job = await this.prisma.job.findUnique({ where: { id: jobId } });
-    if (!job) throw new NotFoundException(`Job with ID ${jobId} not found`);
-
-    return await this.prisma.jobApplication.create({
-      data: {
-        ...data,
-        resumeCv: resumeUrl,
-        coverLetter: coverUrl,
-        job: { connect: { id: jobId } },
-      },
-    });
+    try {
+      const { jobId, ...data } = createJobApplicationDto;
+  
+      // Check if the job exists
+      const job = await this.prisma.job.findUnique({ where: { id: jobId } });
+      if (!job) throw new NotFoundException(`Job with ID ${jobId} not found`);
+  
+      // Create the job application
+      return await this.prisma.jobApplication.create({
+        data: {
+          ...data,
+          resumeCv: resumeUrl,
+          coverLetter: coverUrl,
+          job: { connect: { id: jobId } },
+          previousIndustryExperience: data.previousIndustryExperience || 'Not specified',
+        },
+      });
+    } catch (error) {
+      console.error('Error during job application creation:', error);
+  
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+  
+      throw new BadRequestException(
+        error.message || 'An unexpected error occurred while creating the job application.',
+      );
+    }
   }
+  
+  
 
   async findAll() {
     return await this.prisma.jobApplication.findMany({
