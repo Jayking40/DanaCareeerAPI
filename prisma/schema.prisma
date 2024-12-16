@@ -51,8 +51,8 @@ model JobApplication {
   noticePeriodDays    String
   yearsOfExperience   Int
   salaryExpectation   Float
-  resumeCv            String 
-  coverLetter         String 
+  resumeCv            String?
+  coverLetter         String?
   job                 Job     @relation(fields: [jobId], references: [id])
   jobId               String  @db.ObjectId
   appliedAt           DateTime @default(now())
