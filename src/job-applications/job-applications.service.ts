@@ -7,40 +7,25 @@ export class JobApplicationsService {
   constructor(private prisma: PrismaService) {}
 
   async create(
-    createJobApplicationDto: CreateJobApplicationDto,
-    resumeUrl?: string,
-    coverUrl?: string,
+    createJobApplicationDto: Omit<CreateJobApplicationDto, 'resumeBase64' | 'coverBase64'>,
+    resumeUrl: string,
+    coverUrl: string,
   ) {
-    try {
-      const { jobId, ...data } = createJobApplicationDto;
-  
-      // Check if the job exists
-      const job = await this.prisma.job.findUnique({ where: { id: jobId } });
-      if (!job) throw new NotFoundException(`Job with ID ${jobId} not found`);
-  
-      // Create the job application
-      return await this.prisma.jobApplication.create({
-        data: {
-          ...data,
-          resumeCv: resumeUrl,
-          coverLetter: coverUrl,
-          job: { connect: { id: jobId } },
-          previousIndustryExperience: data.previousIndustryExperience || 'Not specified',
-        },
-      });
-    } catch (error) {
-      console.error('Error during job application creation:', error);
-  
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-  
-      throw new BadRequestException(
-        error.message || 'An unexpected error occurred while creating the job application.',
-      );
-    }
+    const { jobId, ...data } = createJobApplicationDto;
+
+    const job = await this.prisma.job.findUnique({ where: { id: jobId } });
+    if (!job) throw new NotFoundException(`Job with ID ${jobId} not found`);
+
+    return await this.prisma.jobApplication.create({
+      data: {
+        ...data,
+        resumeCv: resumeUrl,
+        coverLetter: coverUrl,
+        job: { connect: { id: jobId } },
+        previousIndustryExperience: data.previousIndustryExperience || 'Not specified',
+      },
+    });
   }
-  
   
 
   async findAll() {

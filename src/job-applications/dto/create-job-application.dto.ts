@@ -70,21 +70,13 @@ export class CreateJobApplicationDto {
   @Max(1000000)
   salaryExpectation: number;
 
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'Resume file (PDF, DOC, or DOCX)',
-  })
-  @IsOptional()
-  resumeCv?: Express.Multer.File;
+  @IsNotEmpty()
+  @IsString()
+  resumeBase64: string;
 
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'Cover letter file (PDF, DOC, or DOCX)',
-  })
-  @IsOptional()
-  coverLetter?: Express.Multer.File;
+  @IsNotEmpty()
+  @IsString()
+  coverBase64: string;
 
   @ApiProperty({ description: 'ID of the associated job', example: '675f1b4ee5c31b78dd29d4ed' })
   @IsNotEmpty()

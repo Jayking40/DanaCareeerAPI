@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UploadedFiles, UseInterceptors, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFiles, UseInterceptors, Get, Param, BadRequestException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiConsumes } from '@nestjs/swagger';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JobApplicationsService } from './job-applications.service';
@@ -13,35 +13,37 @@ export class JobApplicationsController {
 
   @Post('apply')
   @ApiOperation({ summary: 'Create a new job application' })
-  @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: 201, description: 'Job application created successfully' })
-  @UseInterceptors(
-    FileFieldsInterceptor(
-      [
-        { name: 'resume', maxCount: 1 },
-        { name: 'cover', maxCount: 1 },
-      ],
-      {
-        storage: new CloudinaryStorage({
-          cloudinary,
-          params: {
-            folder: 'job-applications',
-            format: async () => 'pdf',
-            public_id: (req, file) => `${Date.now()}-${file.originalname}`,
-          } as Record<string, unknown>,
-        }),
-        limits: { fileSize: 10 * 1024 * 1024 },
-      },
-    ),
-  )
   async create(
     @Body() createJobApplicationDto: CreateJobApplicationDto,
-    @UploadedFiles() files: { resume?: Express.Multer.File[]; cover?: Express.Multer.File[] },
   ) {
-    const resumeFileUrl = files.resume?.[0]?.path || null;
-    const coverFileUrl = files.cover?.[0]?.path || null;
-  
-    return this.applicationsService.create(createJobApplicationDto, resumeFileUrl, coverFileUrl);
+    const { resumeBase64, coverBase64, ...data } = createJobApplicationDto;
+
+    if (!resumeBase64 || !coverBase64) {
+      throw new BadRequestException('Resume and cover letter are required.');
+    }
+
+    try {
+      const resumeUrl = await this.uploadBase64ToCloudinary(resumeBase64, 'resume');
+      const coverUrl = await this.uploadBase64ToCloudinary(coverBase64, 'cover-letter');
+
+      return await this.applicationsService.create(data, resumeUrl, coverUrl);
+    } catch (error) {
+      console.error('Error uploading files to Cloudinary:', error);
+      throw new BadRequestException('Failed to upload files to cloud storage.');
+    }
+  }
+
+  private async uploadBase64ToCloudinary(base64: string, folder: string): Promise<string> {
+    try {
+      const uploadResponse = await cloudinary.uploader.upload(`data:application/pdf;base64,${base64}`, {
+        folder: `job-applications/${folder}`,
+      });
+      return uploadResponse.secure_url; 
+    } catch (error) {
+      console.error('Cloudinary upload error:', error);
+      throw new BadRequestException('Cloudinary upload failed.');
+    }
   }
   
 
