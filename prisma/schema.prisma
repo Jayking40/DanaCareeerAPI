@@ -24,21 +24,30 @@ model User {
 }
 
 model Job {
-  id               String            @id @default(auto()) @map("_id") @db.ObjectId
-  title            String
-  company          String
-  location         String
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  title               String
+  company             String
+  location            String
   applicationDeadline String?
-  jobSummary       String
-  responsibilities String[]         
-  requiredSkills   String[]         
-  applications     JobApplication[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  jobSummary          String
+  responsibilities    String[]         
+  requiredSkills      String[]         
+  applications        JobApplication[]
+  isOpen              Boolean           @default(true)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+enum ApplicationStatus {
+  NEW
+  SHORTLISTED
+  REJECTED
+  ACCEPTED
+  PENDING
 }
 
 model JobApplication {
-  id                          String      @id @default(auto()) @map("_id") @db.ObjectId
+  id                          String          @id @default(auto()) @map("_id") @db.ObjectId
   firstName                   String
   lastName                    String
   email                       String
@@ -53,8 +62,10 @@ model JobApplication {
   salaryExpectation           String
   resumeCv                    String?
   coverLetter                 String?
-  job                         Job         @relation(fields: [jobId], references: [id])
-  jobId                       String      @db.ObjectId
-  appliedAt                   DateTime    @default(now())
+  job                         Job             @relation(fields: [jobId], references: [id])
+  jobId                       String          @db.ObjectId
+  appliedAt                   DateTime        @default(now())
+  status                      ApplicationStatus @default(NEW)
+  source                      String?          
 }
 
