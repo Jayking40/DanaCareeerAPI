@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { HRDataService } from './hr-data.service';
 import { HRDataController } from './hr-data.controller';
