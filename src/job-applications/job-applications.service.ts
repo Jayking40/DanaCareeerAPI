@@ -2,6 +2,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateJobApplicationDto } from './dto/create-job-application.dto';
+import { ApplicationStatus } from '@prisma/client';
 
 @Injectable()
 export class JobApplicationsService {
@@ -44,4 +45,18 @@ export class JobApplicationsService {
     if (!application) throw new NotFoundException(`Application with ID ${id} not found`);
     return application;
   }
+
+  async updateStatus(id: string, status: ApplicationStatus) {
+    const application = await this.prisma.jobApplication.findUnique({
+      where: { id },
+    });
+  
+    if (!application) throw new NotFoundException(`Application with ID ${id} not found`);
+  
+    return await this.prisma.jobApplication.update({
+      where: { id },
+      data: { status },
+    });
+  }
+  
 }

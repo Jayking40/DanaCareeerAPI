@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsEmail, IsNumber, IsString, IsOptional, Min, Max, MinLength, MaxLength } from 'class-validator';
-import { Type } from 'class-transformer';
+import { ApplicationStatus } from '@prisma/client';
+import { IsNotEmpty, IsEmail, IsString, IsOptional, MinLength, MaxLength, IsEnum } from 'class-validator';
 
 export class CreateJobApplicationDto {
   @ApiProperty({ description: 'First name of the applicant', example: 'John' })
@@ -29,6 +30,11 @@ export class CreateJobApplicationDto {
   @IsNotEmpty()
   @IsString()
   address: string;
+
+  @ApiProperty({ description: 'Source of the applicant', example: 'Google, Linkedin, Indeed' })
+  @IsNotEmpty()
+  @IsString()
+  source?: string;
 
   @ApiProperty({ description: 'Educational qualification', example: 'BSc in Computer Science' })
   @IsNotEmpty()
@@ -79,4 +85,10 @@ export class CreateJobApplicationDto {
   @IsNotEmpty()
   @IsString()
   jobId: string;
+}
+
+export class UpdateJobApplicationStatusDto {
+  @IsNotEmpty()
+  @IsEnum(ApplicationStatus, { message: 'Invalid status value provided' })
+  status: ApplicationStatus;
 }

@@ -8,6 +8,7 @@ import {
   Get,
   Param,
   BadRequestException,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -17,7 +18,7 @@ import {
 } from '@nestjs/swagger';
 // import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JobApplicationsService } from './job-applications.service';
-import { CreateJobApplicationDto } from './dto/create-job-application.dto';
+import { CreateJobApplicationDto, UpdateJobApplicationStatusDto } from './dto/create-job-application.dto';
 // import { diskStorage } from 'multer';
 // import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import cloudinary from './cloudinary.config';
@@ -98,4 +99,16 @@ export class JobApplicationsController {
   findOne(@Param('id') id: string) {
     return this.applicationsService.findOne(id);
   }
+
+@ApiOperation({ summary: 'Update job application status' })
+@ApiResponse({ status: 200, description: 'Status updated successfully' })
+@ApiResponse({ status: 404, description: 'Application not found' })
+@Patch('updateStatus/:id')
+async updateStatus(
+  @Param('id') id: string,
+  @Body() updateJobApplicationStatusDto: UpdateJobApplicationStatusDto,
+) {
+  const { status } = updateJobApplicationStatusDto;
+  return await this.applicationsService.updateStatus(id, status);
+}
 }
