@@ -10,6 +10,7 @@ import { JobsModule } from './jobs/jobs.module';
 import { JobApplicationsModule } from './job-applications/job-applications.module';
 import { HrDataModule } from './hr-data/hr-data.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       }),
       inject: [ConfigService],
     }),
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
